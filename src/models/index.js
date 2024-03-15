@@ -1,0 +1,7 @@
+exports.UserModel = require("./user.models")
+exports.ProfileModel = require("./profile.models")
+exports.OtpModel = require("./otp.models")
+exports.ContactModel = require("./Contact.models")
+exports.NovelModel = require("./Novel.models")
+exports.NovelVideoModel = require("./Videos.models")
+exports.LoggerModel = require("./Logger.models")
