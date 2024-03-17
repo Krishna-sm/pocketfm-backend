@@ -17,6 +17,20 @@ class PublicConttroller{
         const res_obj =  await PublicService.getNovelBySlug(req?.params?.slug);
         res.status(httpStatus.OK).send(res_obj);
     }) 
+
+       static  publicNovelBySlugWithVideoSlug=catchAsync(async(req,res)=>{
+        const res_obj =  await PublicService.publicNovelBySlugWithVideoSlug(req?.params?.slug,req?.params?.videoSlug);
+        res.status(httpStatus.OK).send(res_obj);
+    }) 
+       static  publicCommentNovelBySlugWithVideoSlug=catchAsync(async(req,res)=>{
+        const res_obj =  await PublicService.publicCommentNovelBySlugWithVideoSlug(req?.params?.slug,req?.params?.videoSlug,req?.body,req?.user);
+        res.status(httpStatus.OK).send(res_obj);
+    }) 
+     static  getAllpublicCommentNovelBySlugWithVideoSlug=catchAsync(async(req,res)=>{
+        const res_obj =  await PublicService.getAllpublicCommentNovelBySlugWithVideoSlug(req?.params?.slug,req?.params?.videoSlug);
+        res.status(httpStatus.OK).send(res_obj);
+    }) 
+    
     
     
 }

@@ -1,5 +1,5 @@
 const httpStatus = require("http-status");
-const { NovelModel, NovelVideoModel } = require("../models");
+const { NovelModel, NovelVideoModel,UserModel,NovelVideoCommentModel } = require("../models");
 const ApiError = require("../utils/ApiError");
 
 class PublicService{
@@ -55,6 +55,99 @@ resOjb['novels'] = await novels_data.map(obj => ({image:obj.image.uri,slug:obj.s
                         videos
                     }
     } 
+
+    static async publicNovelBySlugWithVideoSlug(slug,video_slug){
+           const novel = await NovelModel.findOne({slug:slug}).select("image.uri title")
+                    if(!novel){
+                        throw new ApiError(httpStatus.BAD_REQUEST,"novel not found")
+                        return
+                    }
+
+            const video = await NovelVideoModel.findOne({ slug: video_slug, novel: novel._id }).select("title slug video_id desc _id");
+
+            if (!video) {
+            throw new ApiError(httpStatus.BAD_REQUEST, "video not found");
+            }
+
+            const Othervideo = await NovelVideoModel.find({  novel: novel._id, _id: { $ne: video._id } }).select("slug title -_id createdAt");
+
+
+                    return {
+                        video,
+                        Othervideo,
+                        novel
+                    }
+    }
+
+    static async publicCommentNovelBySlugWithVideoSlug(slug,video_slug,body,user){
+                const userd = await UserModel.findById(user);
+                if(!userd){
+                    throw new ApiError(httpStatus.NOT_FOUND,"User Details Not found");
+                }
+
+
+                const novel = await NovelModel.findOne({slug:slug})
+                    if(!novel){
+                        throw new ApiError(httpStatus.BAD_REQUEST,"novel not found")
+                        return
+                    }
+
+            const video = await NovelVideoModel.findOne({ slug: video_slug, novel: novel._id });
+
+            if (!video) {
+            throw new ApiError(httpStatus.BAD_REQUEST, "video not found");
+            }
+
+
+                await NovelVideoCommentModel.create({
+                    user,
+                    novel:novel._id,
+                    video:video._id,
+                    comment:body.comment,
+                })
+
+                return {
+                    msg:"Chat Added :)"
+                }
+            
+                
+    }
+
+    static async getAllpublicCommentNovelBySlugWithVideoSlug(slug,video_slug ){
+                // const userd = await UserModel.findById(user);
+                // if(!userd){
+                //     throw new ApiError(httpStatus.NOT_FOUND,"User Details Not found");
+                // }
+
+
+                const novel = await NovelModel.findOne({slug:slug})
+                    if(!novel){
+                        throw new ApiError(httpStatus.BAD_REQUEST,"novel not found")
+                        return
+                    }
+
+            const video = await NovelVideoModel.findOne({ slug: video_slug, novel: novel._id });
+
+            if (!video) {
+            throw new ApiError(httpStatus.BAD_REQUEST, "video not found");
+            }
+
+         const novelVideoComments=    await NovelVideoCommentModel.find({
+
+                novel:novel._id,
+                    video:video._id,
+                    isActive:true
+            }). populate("user","name -_id") .select("comment createdAt -_id")
+
+                
+
+                return novelVideoComments
+            
+                
+    }
+
+
+    
 
 }
 
