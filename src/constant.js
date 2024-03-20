@@ -10,6 +10,8 @@ exports.CustomERROR = {
     'ACCOUNT_BLOCKED':`ACCOUNT_BLOCKED`
 }
 
+
+
 exports.LOGIN_TRY_LIMIT = 6
 exports.Today =  moment().format('YYYY-MM-DD');
 exports.CurrentDay =moment().startOf('day');

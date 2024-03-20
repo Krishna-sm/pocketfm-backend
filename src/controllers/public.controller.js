@@ -19,7 +19,7 @@ class PublicConttroller{
     }) 
 
        static  publicNovelBySlugWithVideoSlug=catchAsync(async(req,res)=>{
-        const res_obj =  await PublicService.publicNovelBySlugWithVideoSlug(req?.params?.slug,req?.params?.videoSlug);
+        const res_obj =  await PublicService.publicNovelBySlugWithVideoSlug(req?.params?.slug,req?.params?.videoSlug,req?.user);
         res.status(httpStatus.OK).send(res_obj);
     }) 
        static  publicCommentNovelBySlugWithVideoSlug=catchAsync(async(req,res)=>{
@@ -28,6 +28,10 @@ class PublicConttroller{
     }) 
      static  getAllpublicCommentNovelBySlugWithVideoSlug=catchAsync(async(req,res)=>{
         const res_obj =  await PublicService.getAllpublicCommentNovelBySlugWithVideoSlug(req?.params?.slug,req?.params?.videoSlug);
+        res.status(httpStatus.OK).send(res_obj);
+    }) 
+      static  AddpublicLikeNovelBySlugWithVideoSlug=catchAsync(async(req,res)=>{
+        const res_obj =  await PublicService.AddpublicLikeNovelBySlugWithVideoSlug(req?.params?.slug,req?.params?.videoSlug,req?.user);
         res.status(httpStatus.OK).send(res_obj);
     }) 
     

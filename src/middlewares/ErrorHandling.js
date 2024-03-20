@@ -2,7 +2,6 @@ const httpStatus = require("http-status")
 const ApiError = require("../utils/ApiError")
 
 exports.ErrorHandling = async(err,req,res,next)=>{
-                console.log(err);
         if(err instanceof ApiError){
             res.status(err.statusCode).send({
                 code:err.statusCode,

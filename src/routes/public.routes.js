@@ -7,9 +7,6 @@ const router = express.Router()
 const AuthValidation = require("../middlewares/Validation")
 const OptionalAuthentication = require("../middlewares/OptionalAuthentication")
 
-const loggerOjb = {
-
-}
 
 router.use(OptionalAuthentication,async(req,res,next)=>{
         console.log("1",{user:req?.user})
@@ -37,6 +34,9 @@ else if (req.path.startsWith('/novel')) {
        obj['message'] = `You are viewing the novel with slug: ${slug}`;
     } else if (videoSlug && pathSegments.length === 5 && pathSegments[4] === 'comment') {
        obj['message'] = `You are viewing comments for the novel with slug: ${slug} and video with slug: ${videoSlug}`;
+    }
+    else if (videoSlug && pathSegments.length === 5 && pathSegments[4] === 'like') {
+       obj['message'] = `You are liking video for the novel with slug: ${slug} and video with slug: ${videoSlug}`;
     }
 }
 
@@ -67,6 +67,11 @@ router.route("/novel/:slug/:videoSlug")
 router.route("/novel/:slug/:videoSlug/comment")
 .post(AuthValidation,PublicValidation.publicCommentNovelBySlugWithVideoSlug,ErrorValidation,PublicConttroller.publicCommentNovelBySlugWithVideoSlug)
 .get(PublicValidation.publicNovelBySlugWithVideoSlug,ErrorValidation,PublicConttroller.getAllpublicCommentNovelBySlugWithVideoSlug)
+
+
+router.route("/novel/:slug/:videoSlug/like")
+.post(AuthValidation,PublicValidation.publicNovelBySlugWithVideoSlug,ErrorValidation,PublicConttroller.AddpublicLikeNovelBySlugWithVideoSlug)
+
 
 
 module.exports = router
