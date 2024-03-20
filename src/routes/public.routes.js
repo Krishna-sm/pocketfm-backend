@@ -5,17 +5,46 @@ const { ErrorValidation } = require("../middlewares/ErrorValidation")
 const PublicValidation = require("../validations/Public.validation")
 const router = express.Router()
 const AuthValidation = require("../middlewares/Validation")
+const OptionalAuthentication = require("../middlewares/OptionalAuthentication")
 
-router.use(async(req,res,next)=>{
+const loggerOjb = {
 
-    // console.log(req.ip);
-    const checkExistIp = await LoggerModel.findOne({ip:req.ip})
-            if(!checkExistIp){
-                await LoggerModel.create({
-                    ip:req.ip,
-                    message:'Access Public Data'
-                })
-            }
+}
+
+router.use(OptionalAuthentication,async(req,res,next)=>{
+        console.log("1",{user:req?.user})
+        // console.log(req.ip);
+        // const checkExistIp = await LoggerModel.findOne({ip:req.ip})
+        const obj = {}
+        obj['ip'] = req.ip;
+        obj['message'] = `Access route  ${req.path}`
+        if(req?.user){
+            obj['user'] = req?.user
+        }        
+        if(req.path ==='/'){
+        obj['message'] = `Access Dashboard`    
+        }
+        else if(req.path ==='/search'){
+obj['message'] = `find novel query?=${req.query.query}`    
+}
+else if (req.path.startsWith('/novel')) {
+    const pathSegments = req.path.split('/');
+    const slug = pathSegments[2];
+    const videoSlug = pathSegments[3];
+    if (videoSlug && pathSegments.length === 4) {
+       obj['message'] = `You are viewing the novel with slug: ${slug} and video with slug: ${videoSlug}`;
+    } else if (!videoSlug && pathSegments.length === 3) {
+       obj['message'] = `You are viewing the novel with slug: ${slug}`;
+    } else if (videoSlug && pathSegments.length === 5 && pathSegments[4] === 'comment') {
+       obj['message'] = `You are viewing comments for the novel with slug: ${slug} and video with slug: ${videoSlug}`;
+    }
+}
+
+
+
+
+                await LoggerModel.create(obj)
+       
     next()
 })
 

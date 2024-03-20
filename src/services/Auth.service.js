@@ -2,7 +2,7 @@ const httpStatus = require("http-status")
 const { UserModel, ProfileModel, OtpModel } = require("../models")
 const ApiError = require("../utils/ApiError")
 const { generateOTP, GenerateOTPToken, VerifyJWTotken, GenerateToken } = require("../utils/jwt.utils")
-const { CustomERROR, LOGIN_TRY_LIMIT, CurrentDay } = require("../constant")
+const { CustomERROR, LOGIN_TRY_LIMIT, CurrentDay, userTypes } = require("../constant")
 const moment = require('moment');
 class AuthService{
 
@@ -50,7 +50,7 @@ class AuthService{
             createdAt: { $gte: CurrentDay.toDate() },
             }).exec();
 
-      if (todayDocument && todayDocument.try_limit >= LOGIN_TRY_LIMIT) {
+      if (todayDocument && todayDocument.try_limit >= LOGIN_TRY_LIMIT && checkExist.user_type!==userTypes.admin_user) {
   throw new ApiError(httpStatus.BAD_REQUEST,"Login attempts limit exceeded for today");
 }
 
