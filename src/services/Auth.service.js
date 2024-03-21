@@ -12,7 +12,7 @@ class AuthService{
         const {email} = body
         const response = (msg,otp,token)=>({
             msg,
-            otp,
+            
             token
         })
 
@@ -37,7 +37,7 @@ class AuthService{
                     purpose:'first time visit'
             })
                     const token = GenerateOTPToken(user._id,otp)
-            return response('OTP Send Successfully',otp,token)
+            return response('OTP Send Successfully , Also Check in Spam',otp,token)
         }
 
         // check already blocked
@@ -67,7 +67,7 @@ class AuthService{
             })
                     const token = GenerateOTPToken(checkExist._id,otp)
 
-            return response('OTP Send Successfully',otp,token)
+            return response('OTP Send Successfully and  Also Check in Spam',otp,token)
 
         }
  
