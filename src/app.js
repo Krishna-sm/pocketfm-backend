@@ -6,7 +6,7 @@ const ApiError = require('./utils/ApiError')
 const httpStatus = require('http-status')
 const { ErrorHandling } = require('./middlewares/ErrorHandling')
 const ExpressSession = require("express-session")
-const passport = require("./utils/passport")
+const {passPort} = require("./utils/passport")
 const requestIp = require("request-ip")
 
 // middleware
@@ -22,8 +22,8 @@ app.use(ExpressSession({
   resave:false,
   saveUninitialized:false
 }))
-app.use(passport.initialize())
-app.use(passport.session())
+app.use(passPort.initialize())
+app.use(passPort.session())
 
 // routes
 app.use("/api/v1",require("./routes"))

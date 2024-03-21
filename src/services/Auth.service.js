@@ -4,6 +4,7 @@ const ApiError = require("../utils/ApiError")
 const { generateOTP, GenerateOTPToken, VerifyJWTotken, GenerateToken } = require("../utils/jwt.utils")
 const { CustomERROR, LOGIN_TRY_LIMIT, CurrentDay, userTypes } = require("../constant")
 const moment = require('moment');
+const { sendEmail } = require("../utils/nodemailer")
 class AuthService{
 
      static  async loginUser(body){
@@ -26,6 +27,8 @@ class AuthService{
             })
      
             // await send otp function
+
+          await  sendEmail({email:email,otp:otp})
 
             await OtpModel.create({
                     user:user._id,
@@ -55,6 +58,7 @@ class AuthService{
 }
 
             // await send otp function
+                 await  sendEmail({email:email,otp:otp})
 
         if(todayDocument){
             await OtpModel.findByIdAndUpdate({_id:todayDocument._id},{
@@ -112,13 +116,48 @@ class AuthService{
             throw new ApiError(httpStatus.NOT_FOUND,"User Not Found");
             return
         }
-        const profile = await ProfileModel.findOne({user:checkExistUser._id});
+        // const profile = await ProfileModel.findOne({user:checkExistUser._id});
 
             return {
                 user:checkExistUser
             }
 
     }
+
+    static async GoogleLoginUser(profile){
+                 
+               
+        if(!profile?._json.email){
+                        throw new ApiError(httpStatus.UNAUTHORIZED,"Details Not Valid")
+                    }
+                const existUser = await UserModel.findOne({email:profile?._json.email})
+
+                if(existUser){
+                               
+                            await UserModel.findByIdAndUpdate(existUser._id,{name:profile._json.name, user_type:userTypes.google_user})
+                              const logintoken = await GenerateToken(existUser._id)
+            return logintoken
+                }
+
+                const obj = {}
+
+                if(profile._json.name){
+                    obj['name'] = profile._json.name
+                }
+
+                        const user =     await UserModel.create({
+                                ...obj,
+                                email:profile?._json.email,
+                                user_type:userTypes.google_user
+                            })
+
+                              await ProfileModel.create({
+                user:user._id
+            })
+                 const logintoken = await GenerateToken(user._id)
+            return logintoken
+
+    }       
 
 }
 

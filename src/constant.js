@@ -11,6 +11,19 @@ exports.CustomERROR = {
 }
 
 
+exports.nodemailerCredentials= {
+  host: process.env.SMTP_HOST,
+  port: process.env.SMTP_PORT,
+  secure: true,
+  auth: {
+    user: process.env.SMTP_USERNAME,
+    pass: process.env.SMTP_PASSWORD,
+  },
+}
+
+exports.Google_Client_id = process.env.CLIENT_ID
+exports.Google_Client_screate = process.env.CLIENT_SCREATE
+exports.Google_callback  = process.env.GOOGLE_CALLBACK
 
 exports.LOGIN_TRY_LIMIT = 6
 exports.Today =  moment().format('YYYY-MM-DD');

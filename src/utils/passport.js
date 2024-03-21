@@ -1,4 +1,5 @@
 const passport = require('passport');
+const google_scrategy = require('./GoogleProvider');
 
 
 passport.serializeUser(function(user, done) {
@@ -10,6 +11,6 @@ passport.serializeUser(function(user, done) {
 });
 
 // strategies
-// passport.use(GithubAuth)
+passport.use(google_scrategy)
 
-module.exports = passport
+module.exports = {passPort:passport}

@@ -28,24 +28,26 @@ const UserSchema = new mongoose.Schema({
     timestamps:true
 })
 
-UserSchema.pre('save',async function (next){
-    const user = this;
-    if(this.isModified('name')){
-        this.name = function(){
-                switch(user.user_type){
-                    case userTypes.admin_user :
-                            return this.name+"_admin" 
-                    case userTypes.email_user :
-                return this.name+"_gmail" 
-                   case userTypes.google_user :
-                return this.name+"_google" 
-                default : 
-                return this.name
-                }
+UserSchema.pre('save', async function(next) {
+    if (this.isModified('name')) {
+        switch (this.user_type) {
+            case userTypes.admin_user:
+                this.name = this.name + "_admin";
+                break;
+            case userTypes.email_user:
+                this.name = this.name + "_gmail";
+                break;
+            case userTypes.google_user:
+                this.name = this.name + "_google";
+                break;
+            default:
+                this.name = this.name
+                // Do nothing if user_type is not recognized
+                break;
         }
     }
-    next()
-})
+    next();
+});
 
 
 module.exports =  mongoose.model( 'user' , UserSchema)
