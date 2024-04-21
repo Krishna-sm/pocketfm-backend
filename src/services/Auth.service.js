@@ -133,8 +133,10 @@ class AuthService{
                 const existUser = await UserModel.findOne({email:profile?._json.email})
 
                 if(existUser){
-                               
-                            await UserModel.findByIdAndUpdate(existUser._id,{name:profile._json.name, user_type:userTypes.google_user})
+                                        if(existUser.user_type !== userTypes.admin_user){
+
+                                            await UserModel.findByIdAndUpdate(existUser._id,{name:profile._json.name, user_type:userTypes.google_user})
+                                        } 
                               const logintoken = await GenerateToken(existUser._id)
             return logintoken
                 }
